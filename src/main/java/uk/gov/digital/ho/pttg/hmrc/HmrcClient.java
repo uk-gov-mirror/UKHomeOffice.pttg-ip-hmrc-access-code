@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -48,10 +49,18 @@ public class HmrcClient {
         AccessCodeHmrc accessCode;
 
         try {
+            HttpEntity<MultiValueMap<String, String>> request = generateRequest(totpCode);
+
+            log.info("Using request:\n{}", request);
+
             accessCode = restTemplate.postForEntity(accessTokenResource, generateRequest(totpCode), AccessCodeHmrc.class).getBody();
             if (accessCode == null) {
                 throw new HmrcAccessCodeServiceRuntimeException("HMRC returned null access code");
             }
+
+            log.info("Received Access Code info: \n{}", accessCode);
+            log.info("Access Code:\nBearer: {}", new String(Base64Utils.encode(accessCode.getCode().getBytes())));
+
         } catch (HttpClientErrorException ex) {
             HttpStatus statusCode = ex.getStatusCode();
             if (statusCode.equals(FORBIDDEN)) {
