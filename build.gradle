@@ -27,7 +27,6 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
 apply plugin: 'jacoco'
 apply plugin: 'net.researchgate.release'
 
@@ -38,17 +37,6 @@ springBoot {
 checkstyleTest.enabled = false
 checkstyle {
   ignoreFailures = false
-}
-findbugs {
-  ignoreFailures = false
-}
-
-tasks.withType(FindBugs) {
-  excludeFilter = file('config/findbugs/exclude-filter.xml')
-  reports {
-    xml.enabled false
-    html.enabled true
-  }
 }
 
 
@@ -62,8 +50,8 @@ jar {
             'Implementation-Version': version
   }
 }
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
   mavenCentral()
@@ -93,7 +81,6 @@ dependencies {
 
   testCompile group: 'org.springframework.boot',  name: 'spring-boot-starter-test'
   testCompile group: 'com.jayway.jsonpath',       name: 'json-path'
-  testCompile group: 'com.google.code.findbugs',  name: 'annotations',    version: '3.0.1u2'
   testCompile group: 'junit',                     name: 'junit',          version: '4.12'
   testCompile group: 'org.assertj',               name: 'assertj-core',   version: '3.5.2'
   testCompile group: 'com.github.tomakehurst',    name: 'wiremock',       version: '2.6.0'
